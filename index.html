@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NXT WRLD - Clothing Showroom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://placehold.co/1920x1080/0a0a0a/1a1a1a?text=NXT+WRLD+VIBES') no-repeat center center/cover;
+            position: relative;
+        }
+        .hero-text {
+            transform: translate(-50%, -50%);
+        }
+        .drop-card {
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+        }
+        .drop-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.1), 0 10px 10px -5px rgba(255, 255, 255, 0.04);
+        }
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.7s ease;
+            z-index: -1;
+        }
+        .glow-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .section-title {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Disable image interaction */
+        img {
+            pointer-events: none;
+            user-select: none;
+        }
+        /* Modal Styles */
+        #details-modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+        #details-modal.modal-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #details-modal.modal-active #modal-content {
+            transform: scale(1);
+        }
+        .size-btn.active {
+            background-color: white;
+            color: black;
+            border-color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 w-full z-50 transition-colors duration-300 bg-black/30 backdrop-blur-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" id="home-link" class="text-2xl font-black tracking-widest uppercase">NXT WRLD</a>
+            <div class="hidden md:flex space-x-8 items-center font-semibold">
+                <a href="#drops" class="nav-link-main hover:text-white transition-colors">Latest Drops</a>
+                <a href="#" id="collection-link" class="hover:text-white transition-colors">Collection</a>
+                <a href="#lookbook" class="nav-link-main hover:text-white transition-colors">Lookbook</a>
+                <a href="#about" class="nav-link-main hover:text-white transition-colors">Our Vision</a>
+                <a href="#" class="bg-white text-black py-2 px-5 rounded-full font-bold hover:bg-gray-200 transition-colors">Contact</a>
+            </div>
+            <button class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content (Home Page) -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section flex items-center justify-center text-center">
+            <div class="absolute inset-0 flex items-center justify-center z-0">
+                 <img src="https://placehold.co/500x500/ffffff/0a0a0a?text=LOGO" alt="NXT WRLD Background Logo" class="w-1/2 max-w-lg opacity-5">
+            </div>
+            <div class="hero-text absolute top-1/2 left-1/2 w-full px-4 z-10">
+                <h1 id="hero-title" class="text-5xl md:text-8xl font-black uppercase text-white tracking-wider" style="text-shadow: 0 0 20px rgba(0,0,0,0.7);">
+                    Define The <span class="block">Next World.</span>
+                </h1>
+                <p id="hero-subtitle" class="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl mx-auto">
+                    Uncompromising quality & futuristic design for the modern pioneer. This is not just clothing, it's a statement.
+                </p>
+                <a href="#" id="hero-explore-btn" class="glow-button inline-block mt-10 bg-transparent border-2 border-white text-white font-bold py-3 px-10 rounded-full uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">
+                    Explore Collection
+                </a>
+            </div>
+        </section>
+
+        <main class="container mx-auto px-6 py-20">
+            <!-- Latest Drops Section -->
+            <section id="drops" class="py-20">
+                <h2 class="section-title text-4xl md:text-6xl font-black text-center uppercase mb-16">Latest Drops</h2>
+                <div id="latest-drops-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Products will be loaded here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Lookbook Section -->
+            <section id="lookbook" class="py-20">
+                 <h2 class="section-title text-4xl md:text-6xl font-black text-center uppercase mb-16">Lookbook</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="reveal rounded-lg overflow-hidden"><img src="https://placehold.co/800x600/1c1c1c/4d4d4d?text=Look+1" class="w-full h-full object-cover" alt="Look 1"></div>
+                    <div class="reveal rounded-lg overflow-hidden"><img src="https://placehold.co/800x600/1c1c1c/4d4d4d?text=Look+2" class="w-full h-full object-cover" alt="Look 2"></div>
+                    <div class="reveal md:col-span-2 rounded-lg overflow-hidden"><img src="https://placehold.co/1600x800/1c1c1c/4d4d4d?text=Look+3" class="w-full h-full object-cover" alt="Look 3"></div>
+                 </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="py-20 text-center">
+                 <h2 class="section-title text-4xl md:text-6xl font-black text-center uppercase mb-8">Our Vision</h2>
+                 <p class="reveal max-w-3xl mx-auto text-gray-300 text-lg leading-relaxed">
+                    NXT WRLD was born from a desire to merge the digital and physical. We believe clothing is an extension of identity, a canvas for the future. Our pieces are meticulously crafted, blending avant-garde aesthetics with everyday utility. We are not just creating apparel; we are building the wardrobe for tomorrow's world.
+                 </p>
+            </section>
+        </main>
+    </div>
+
+    <!-- Collection Page Content -->
+    <div id="collection-page" class="hidden">
+        <main class="container mx-auto px-6">
+            <section id="collection" class="pt-32 pb-20">
+                <h2 class="section-title text-4xl md:text-6xl font-black text-center uppercase mb-16">Full Collection</h2>
+                <div id="collection-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <!-- Products will be loaded here by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-black/50 py-10">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p class="text-xl font-bold uppercase tracking-widest">NXT WRLD</p>
+            <p class="mt-2">Style for the Next Generation.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-white">Instagram</a>
+                <a href="#" class="hover:text-white">Twitter</a>
+                <a href="#" class="hover:text-white">TikTok</a>
+            </div>
+            <p class="mt-6 text-sm">&copy; 2025 NXT WRLD. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center p-4 z-[100] opacity-0 pointer-events-none">
+        <div id="modal-content" class="bg-[#1a1a1a] text-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row overflow-hidden transform scale-95">
+            <!-- Image -->
+            <div class="w-full md:w-1/2 h-64 md:h-auto">
+                <img id="modal-img" src="" alt="Product Image" class="w-full h-full object-cover" style="pointer-events: auto; user-select: auto;">
+            </div>
+            <!-- Details -->
+            <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto">
+                <h3 id="modal-title" class="text-3xl font-bold mb-2"></h3>
+                <p id="modal-desc" class="text-gray-400 mb-6 flex-grow"></p>
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-2">Select Size:</h4>
+                    <div class="flex space-x-2">
+                        <button class="size-btn w-10 h-10 border border-gray-600 rounded hover:border-white focus:outline-none transition">S</button>
+                        <button class="size-btn w-10 h-10 border border-gray-600 rounded hover:border-white focus:outline-none transition">M</button>
+                        <button class="size-btn w-10 h-10 border border-gray-600 rounded hover:border-white focus:outline-none transition">L</button>
+                        <button class="size-btn w-10 h-10 border border-gray-600 rounded hover:border-white focus:outline-none transition">XL</button>
+                    </div>
+                </div>
+                <button id="contact-order-btn" class="w-full mt-4 bg-white text-black py-3 rounded-lg font-bold hover:bg-gray-300 transition-colors">Contact to Order</button>
+                <p id="size-warning" class="text-red-400 text-sm mt-2 text-center hidden">Please select a size first.</p>
+                <div id="contact-links" class="mt-6 text-center hidden">
+                    <p class="mb-3 font-semibold">Contact us via:</p>
+                    <div class="flex justify-center gap-4">
+                        <a href="https://instagram.com/your_username" target="_blank" rel="noopener noreferrer" class="bg-pink-600 text-white py-2 px-6 rounded-lg font-bold hover:bg-pink-700 transition-colors inline-block">Instagram</a>
+                        <a href="mailto:contact@nxtwrld.com" class="bg-gray-500 text-white py-2 px-6 rounded-lg font-bold hover:bg-gray-600 transition-colors inline-block">Email</a>
+                    </div>
+                </div>
+            </div>
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- PRODUCT "DATABASE" ---
+        // Edit, add, or remove products from this list.
+        const products = [
+            {
+                id: 1,
+                name: '  NXT WRLD T-SHIRT (BLACK)',
+                description: 'Heavyweight fleece with augmented reality print.',
+                imageUrl: 'https://media.discordapp.net/attachments/1329893059147862109/1389100615208140862/20250629_233050.jpg?ex=68bfad42&is=68be5bc2&hm=8518572167166d3073bdd58bcd40a366d9434b72f64035c8b0591769a0e4961e&=&format=webp&width=751&height=751'
+            },
+            {
+                id: 2,
+                name: 'NXT WRLD T-SHIRT (WHITE)',
+                description: 'Ripstop fabric with magnetic pockets.',
+                imageUrl: 'https://media.discordapp.net/attachments/1329893059147862109/1389100614067290222/20250629_233951.jpg?ex=68bfad42&is=68be5bc2&hm=1918216a9dc8cb8db9162dbe1ad0369456453b0f617f8ceb5bda524405483a29&=&format=webp&width=751&height=751'
+            },
+            {
+                id: 3,
+                name: 'NXT WRLD T-SHIRT (GREEN)',
+                description: 'Ultra-soft cotton with a heat-reactive graphic.',
+                imageUrl: 'https://media.discordapp.net/attachments/1329893059147862109/1389247465722478592/20250630_160059.jpg?ex=68bf8d46&is=68be3bc6&hm=0b7784457a34862e53b69acfc8024760c52debfb994cc50dc20774bd49988033&=&format=webp&width=751&height=751'
+            },
+            {
+                id: 4,
+                name: 'NXT WRLD HOODIE',
+                description: 'Water-resistant shell with custom inner lining.',
+                imageUrl: 'https://media.discordapp.net/attachments/1329893059147862109/1389248102170497215/20250629_234551.jpg?ex=68bf8dde&is=68be3c5e&hm=22c67556f2b5b716cb8d6ae5d740432ec01e78d8cee147ede1ae09d77a66ba27&=&format=webp&width=662&height=751'
+            },
+            {
+                id: 5,
+                name: 'Vector Joggers',
+                description: 'Tapered fit with reflective piping and zip pockets.',
+                imageUrl: 'https://placehold.co/600x700/111111/333333?text=NXT+JOGGERS'
+            },
+            {
+                id: 6,
+                name: 'Matrix Cap',
+                description: '6-panel cap with an embroidered front logo.',
+                imageUrl: 'https://placehold.co/600x700/111111/333333?text=NXT+CAP'
+            },
+            {
+                id: 7,
+                name: 'Data Stream L/S',
+                description: 'Premium long sleeve with sleeve graphics.',
+                imageUrl: 'https://placehold.co/600x700/111111/333333?text=NXT+LONG+SLEEVE'
+            },
+            {
+                id: 8,
+                name: 'Grid Shorts',
+                description: 'Technical fabric shorts perfect for any activity.',
+                imageUrl: 'https://placehold.co/600x700/111111/333333?text=NXT+SHORTS'
+            }
+        ];
+
+        // --- GLOBAL VARIABLES ---
+        const mainContent = document.getElementById('main-content');
+        const collectionPage = document.getElementById('collection-page');
+        const homeLink = document.getElementById('home-link');
+        const collectionLink = document.getElementById('collection-link');
+        const heroExploreBtn = document.getElementById('hero-explore-btn');
+        const mainNavLinks = document.querySelectorAll('.nav-link-main');
+        const latestDropsGrid = document.getElementById('latest-drops-grid');
+        const collectionGrid = document.getElementById('collection-grid');
+
+        // --- PAGE SWITCHING LOGIC ---
+        function showHomePage() {
+            mainContent.classList.remove('hidden');
+            collectionPage.classList.add('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.body.style.overflow = '', 50);
+        }
+
+        function showCollectionPage() {
+            mainContent.classList.add('hidden');
+            collectionPage.classList.remove('hidden');
+            window.scrollTo(0, 0);
+            revealOnScroll();
+        }
+
+        homeLink.addEventListener('click', e => { e.preventDefault(); showHomePage(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        collectionLink.addEventListener('click', e => { e.preventDefault(); showCollectionPage(); });
+        heroExploreBtn.addEventListener('click', e => { e.preventDefault(); showCollectionPage(); });
+        mainNavLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                if (!collectionPage.classList.contains('hidden')) {
+                    showHomePage();
+                    const targetId = link.getAttribute('href');
+                    setTimeout(() => { document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' }); }, 100);
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // --- PRODUCT RENDERING ---
+        function createProductCard(product) {
+            return `
+                <div class="drop-card bg-[#1a1a1a] rounded-lg overflow-hidden reveal">
+                    <img src="${product.imageUrl}" alt="${product.name}" class="w-full h-auto object-cover aspect-[6/7]">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold">${product.name}</h3>
+                        <p class="text-gray-400 mt-2">${product.description}</p>
+                        <button class="view-details-btn mt-4 w-full bg-white text-black py-3 rounded-lg font-bold hover:bg-gray-300 transition-colors">View Details</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProducts() {
+            // Render latest 3 drops
+            const latestProducts = products.slice(0, 3);
+            latestDropsGrid.innerHTML = latestProducts.map(createProductCard).join('');
+
+            // Render all products for collection page
+            collectionGrid.innerHTML = products.map(createProductCard).join('');
+
+            // Re-trigger animations for new elements
+            revealOnScroll();
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', renderProducts);
+
+        // --- GSAP and UI Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+        const tl = gsap.timeline();
+        tl.from("#hero-title", { duration: 1, y: 50, opacity: 0, ease: "power3.out", delay: 0.2 })
+          .from("#hero-subtitle", { duration: 1, y: 30, opacity: 0, ease: "power2.out" }, "-=0.7")
+          .from("#hero-button", { duration: 0.8, y: 20, opacity: 0, ease: "power2.out" }, "-=0.6");
+        
+        gsap.to("#header", { scrollTrigger: { trigger: "body", start: "top top", end: "+=100", scrub: 1 }, backgroundColor: "rgba(10, 10, 10, 0.8)", borderBottom: "1px solid #2a2a2a" });
+        
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.fromTo(title, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", scrollTrigger: { trigger: title, start: "top 85%", toggleActions: "play none none none" } });
+        });
+        
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            reveals.forEach(reveal => {
+                if (reveal.getBoundingClientRect().top < windowHeight - 100) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+        document.addEventListener('DOMContentLoaded', revealOnScroll);
+
+        // --- Security Script ---
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = e => { if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) return false; };
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('details-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalImg = document.getElementById('modal-img');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const sizeButtons = document.querySelectorAll('.size-btn');
+        const contactOrderBtn = document.getElementById('contact-order-btn');
+        const sizeWarning = document.getElementById('size-warning');
+        const contactLinks = document.getElementById('contact-links');
+        let selectedSize = null;
+
+        function resetModalState() {
+            selectedSize = null;
+            sizeButtons.forEach(btn => btn.classList.remove('active'));
+            sizeWarning.classList.add('hidden');
+            contactLinks.classList.add('hidden');
+        }
+
+        function openModal(card) {
+            resetModalState();
+            modalImg.src = card.querySelector('img').src;
+            modalTitle.textContent = card.querySelector('h3').textContent;
+            modalDesc.textContent = card.querySelector('p').textContent;
+            modal.classList.add('modal-active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('modal-active');
+            document.body.style.overflow = '';
+        }
+        
+        document.body.addEventListener('click', (e) => {
+            if (e.target.matches('.view-details-btn')) {
+                const card = e.target.closest('.drop-card');
+                openModal(card);
+            }
+        });
+        
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                sizeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                selectedSize = button.textContent;
+                sizeWarning.classList.add('hidden');
+                contactLinks.classList.add('hidden');
+            });
+        });
+        
+        contactOrderBtn.addEventListener('click', () => {
+            if (!selectedSize) {
+                sizeWarning.classList.remove('hidden');
+            } else {
+                sizeWarning.classList.add('hidden');
+                contactLinks.classList.remove('hidden');
+            }
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => e.target === modal && closeModal());
+        document.addEventListener('keydown', e => e.key === 'Escape' && modal.classList.contains('modal-active') && closeModal());
+    </script>
+</body>
+</html>
+
